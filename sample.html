@@ -1,0 +1,76 @@
+<!-- Super easy to use, just drop the JS inside <script></script> at the bottom of your page and use <div id="type"></div> to call it! -->
+<html>
+    <head>
+        <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <style>
+            #type {
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: 200;
+}
+
+@media screen and (min-width: 768px) {
+    #type {
+        font-size: 23px;
+    }
+}
+        </style>
+    </head>
+    <body>
+
+            <div id="type"></div>
+       
+    <script>
+        $.fn.typer = function(text, options){
+    options = $.extend({}, {
+        char: ' ',
+        delay: 1000,
+        duration: 600,
+        endless: true
+    }, options || text);
+
+    text = $.isPlainObject(text) ? options.text : text;
+
+    var elem = $(this),
+        isTag = false,
+        c = 0;
+    
+    (function typetext(i) {
+        var e = ({string:1, number:1}[typeof text] ? text : text[i]) + options.char,
+            char = e.substr(c++, 1);
+
+        if( char === '<' ){ isTag = true; }
+        if( char === '>' ){ isTag = false; }
+        elem.html(e.substr(0, c));
+        if(c <= e.length){
+            if( isTag ){
+                typetext(i);
+            } else {
+                setTimeout(typetext, options.duration/10, i);
+            }
+        } else {
+            c = 0;
+            i++;
+            
+            if (i === text.length && !options.endless) {
+                return;
+            } else if (i === text.length) {
+                i = 0;
+            }
+            setTimeout(typetext, options.delay, i);
+        }
+    })(0);
+};
+
+            $('#type').typer(['a <b>cool</b> affect', 'made with <b>js<b>', 'format your <i>text</i> here', 'im watching <b>you</b>' ]);
+
+
+
+    </script>
+    </body>
+</html>
